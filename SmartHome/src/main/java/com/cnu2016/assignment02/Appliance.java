@@ -8,4 +8,7 @@ public abstract class Appliance {
     public abstract void start();
     
     public abstract void stop();
+    
+    protected abstract Boolean getStatus();
+    
 }

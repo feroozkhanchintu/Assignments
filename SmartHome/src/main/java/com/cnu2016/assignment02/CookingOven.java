@@ -13,4 +13,8 @@ public class CookingOven extends Appliance{
     public void stop() {
         status = false;
     }
+    
+    protected Boolean getStatus() {
+        return status;
+    }
 }

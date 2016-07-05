@@ -6,7 +6,7 @@ public class WaterHeater extends Appliance {
     
     public WaterHeater() {
         status = false;
-        timer = 0;
+        timer = 30;
     }
     
     public void start() {
@@ -15,5 +15,9 @@ public class WaterHeater extends Appliance {
     
     public void stop() {
         status = false;
+    }
+    
+    protected Boolean getStatus() {
+        return status;
     }
 }
