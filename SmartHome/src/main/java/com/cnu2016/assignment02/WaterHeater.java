@@ -2,7 +2,12 @@ package com.cnu2016.assignment02;
 
 public class WaterHeater extends Appliance {
     
-    static int timer;
+    int timer;
+    
+    public WaterHeater() {
+        status = false;
+        timer = 0;
+    }
     
     public void start() {
         status = true;
