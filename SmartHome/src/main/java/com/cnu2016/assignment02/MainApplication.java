@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
-
+import java.util.Collections;
 
 public class MainApplication {
     
@@ -22,6 +22,7 @@ public class MainApplication {
 				event.status = splited[2];
 				events.add(event);
 			}
+			Collections.sort(events, (a, b) -> a.startTime < b.startTime ? -1 : a.startTime == b.startTime ? 0 : 1);
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
