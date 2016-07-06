@@ -6,7 +6,7 @@ public class WaterHeater extends Appliance {
     
     public WaterHeater() {
         status = false;
-        timer = 30;
+        timer = 30;//some random value > 24
     }
     
     public void start() {

@@ -1,9 +1,10 @@
 package com.cnu2016.assignment02;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 
 public class MainApplication {
     
@@ -27,14 +28,9 @@ public class MainApplication {
 				event.status = splited[2];
 				events.add(event);
 			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)br.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
 		}
 		
 		int position = 0;
@@ -45,9 +41,6 @@ public class MainApplication {
 		for (int timer = 0; timer <= 24; timer++) {
 		    if (WH.timer == timer - 2) {
 		        WH.stop();
-		        System.out.println("Aircondition Status " + AC.status);
-		        System.out.println("Water Heater Status " + WH.status);
-		        System.out.println("Cooking Oven Status " + CO.status);
 		        String currentStatus = AC.status + " " + WH.status + " " + CO.status;
 		        output.add(currentStatus);
 		    }
@@ -65,6 +58,7 @@ public class MainApplication {
 		                WH.timer = timer;
 		            } else {
 		                WH.stop();
+		                WH.timer = 30;
 		            }
 		        } else if ("CO".equals(events.get(position).appliance)) {
 		            if ("ON".equals(events.get(position).status)) {
@@ -73,12 +67,8 @@ public class MainApplication {
 		                CO.stop();
 		            }
 		        } else {
-		            System.out.println("Wrong Appliance");
 		            output.add("Wrong Appliance");
 		        }
-		        System.out.println("Aircondition Status " + AC.status);
-		        System.out.println("Water Heater Status " + WH.status);
-		        System.out.println("Cooking Oven Status " + CO.status);
 		        String currentStatus = AC.status + " " + WH.status + " " + CO.status;
 		        output.add(currentStatus);
 		        position++;
