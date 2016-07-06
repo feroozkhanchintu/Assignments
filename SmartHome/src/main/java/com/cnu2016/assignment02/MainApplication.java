@@ -8,18 +8,12 @@ import java.io.FileReader;
 
 public class MainApplication {
     
-    public ArrayList<String> application(String filePath) {
+    public static ArrayList<Event> fileReadUtil(String filePath) {
         ArrayList<Event> events = new ArrayList<Event>();
-        ArrayList<String> output = new ArrayList<String>();
-        
-		BufferedReader br = null;
-
+        BufferedReader br = null;
 		try {
-
 			String sCurrentLine;
-
 			br = new BufferedReader(new FileReader(filePath));
-
 			while ((sCurrentLine = br.readLine()) != null) {
 				String[] splited = sCurrentLine.split(" ");
 				Event event = new Event();
@@ -32,15 +26,29 @@ public class MainApplication {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return events;
+    }
+    
+    public ArrayList<String> application(String filePath) {
+        
+        ArrayList<String> output = new ArrayList<String>();
+        ArrayList<Event> events = MainApplication.fileReadUtil(filePath);
 		
 		int position = 0;
 		AirConditioner AC = new AirConditioner();
 		CookingOven CO = new CookingOven();
 		WaterHeater WH = new WaterHeater();
 		
-		for (int timer = 0; timer <= 24; timer++) {
+		//Considering 1 millisecond to be 1 hour
+		for (int timer = 1; timer <= 24; timer++) {
+		    try {
+                Thread.sleep(1);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
 		    if (WH.timer == timer - 2) {
 		        WH.stop();
+		        WH.timer = 30; //random value >24
 		        String currentStatus = AC.status + " " + WH.status + " " + CO.status;
 		        output.add(currentStatus);
 		    }
@@ -84,3 +92,4 @@ public class MainApplication {
 		System.out.println(output);
     }
 }
+
