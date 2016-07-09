@@ -51,7 +51,7 @@ public class ProductController {
     @RequestMapping(value="/api/products", method=RequestMethod.POST)
     public ResponseEntity<?> insertProductsPost(@RequestBody ProductSerializer body) {
         Product product = productRepository.save(new Product(body));
-        return ResponseEntity.status(HttpStatus.CREATED ).body(product);
+        return ResponseEntity.status(HttpStatus.CREATED ).body(new ProductSerializer(product));
     }
 
     @RequestMapping(value="/api/products/{pk}", method=RequestMethod.PUT)
@@ -63,7 +63,7 @@ public class ProductController {
         body.setId(pk);
         if (product != null) {
             productRepository.save(new Product(body));
-            return ResponseEntity.status(HttpStatus.OK).body(new Product(body));
+            return ResponseEntity.status(HttpStatus.OK).body(body);
         } else {
             Map error = new HashMap();
             error.put("detail" , "Not found.");
@@ -84,7 +84,7 @@ public class ProductController {
                 product.setProductDescription(body.getDescription());
             }
             productRepository.save(product);
-            return ResponseEntity.status(HttpStatus.OK).body(product);
+            return ResponseEntity.status(HttpStatus.OK).body(new ProductSerializer(product));
         } else {
             Map error = new HashMap();
             error.put("detail" , "Not found.");
