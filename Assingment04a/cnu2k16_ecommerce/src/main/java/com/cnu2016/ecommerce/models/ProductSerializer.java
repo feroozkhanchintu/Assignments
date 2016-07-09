@@ -5,6 +5,12 @@ package com.cnu2016.ecommerce.models;
  */
 public class ProductSerializer {
     private int id;
+    
+    public ProductSerializer(Product product) {
+        this.id = product.getProductID();
+        this.code = product.getProductCode();
+        this.description = product.getProductDescription();
+    }
 
     public ProductSerializer(int id, String code, String description) {
         this.id = id;
