@@ -44,11 +44,6 @@ public class User {
     @Column(name="COUNTRY")
     private String country;
 
-//    @OneToMany(mappedBy = "userDetails")
-//    @ElementCollection(targetClass=Orders.class)
-//    @JsonManagedReference
-//    private Set<Orders> orders;
-
     public String getCompanyName() {
         return companyName;
     }
@@ -56,14 +51,6 @@ public class User {
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
-
-//    public Set<Orders> getOrders() {
-//        return orders;
-//    }
-//
-//    public void setOrders(Set<Orders> orders) {
-//        this.orders = orders;
-//    }
 
     public Integer getUserId() {
         return userId;

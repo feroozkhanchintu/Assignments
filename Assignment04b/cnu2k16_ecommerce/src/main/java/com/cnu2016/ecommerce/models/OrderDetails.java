@@ -37,6 +37,19 @@ public class OrderDetails {
     protected OrderDetails() {}
 
     public OrderDetails(OrderDetailsPK orderDetailsPk, Integer quantityOrdered, Double costPrice,
+                        Double sellingPrice) {
+        this.orderDetailsPk = orderDetailsPk;
+        this.quantityOrdered = quantityOrdered;
+        this.costPrice = costPrice;
+        this.sellingPrice = sellingPrice;
+    }
+
+    public OrderDetails(OrderDetailsPK orderDetailsPk, Integer quantityOrdered) {
+        this.orderDetailsPk = orderDetailsPk;
+        this.quantityOrdered = quantityOrdered;
+    }
+
+    public OrderDetails(OrderDetailsPK orderDetailsPk, Integer quantityOrdered, Double costPrice,
                         Double sellingPrice, Orders orders, Product products) {
         this.orderDetailsPk = orderDetailsPk;
         this.quantityOrdered = quantityOrdered;
@@ -45,12 +58,6 @@ public class OrderDetails {
         this.orders = orders;
         this.products = products;
     }
-
-    public OrderDetails(OrderDetailsPK orderDetailsPk, Integer quantityOrdered) {
-        this.orderDetailsPk = orderDetailsPk;
-        this.quantityOrdered = quantityOrdered;
-    }
-
 
     public OrderDetailsPK getOrderDetailsPk() {
         return orderDetailsPk;

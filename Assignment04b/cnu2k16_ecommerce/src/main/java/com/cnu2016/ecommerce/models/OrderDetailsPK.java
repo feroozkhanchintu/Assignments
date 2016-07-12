@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Embeddable
 public class OrderDetailsPK implements Serializable{
     private Integer orderId;
+    private Integer productId;
 
     public OrderDetailsPK(Integer orderId, Integer productId) {
         this.orderId = orderId;
@@ -17,7 +18,6 @@ public class OrderDetailsPK implements Serializable{
 
     public OrderDetailsPK() {}
 
-    private Integer productId;
 
     public Integer getProductId() {
         return productId;

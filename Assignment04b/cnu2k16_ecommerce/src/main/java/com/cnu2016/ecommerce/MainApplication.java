@@ -1,6 +1,5 @@
 package com.cnu2016.ecommerce;
 
-import com.cnu2016.ecommerce.interceptor.LogInterceptor;
 import com.cnu2016.ecommerce.models.Product;
 import com.cnu2016.ecommerce.repository.ProductRepository;
 import org.slf4j.Logger;
@@ -19,16 +18,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @SpringBootApplication
 public class MainApplication extends WebMvcConfigurerAdapter {
     private static final Logger log = LoggerFactory.getLogger(com.cnu2016.ecommerce.MainApplication.class);
-
-    @Autowired
-    private LogInterceptor logInterceptor;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(logInterceptor);
-    }
-
-
     public static void main(String[] args) {
         SpringApplication.run(com.cnu2016.ecommerce.MainApplication.class);
     }
