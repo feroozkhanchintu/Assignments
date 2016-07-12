@@ -37,9 +37,10 @@ class SqsToRds:
             responseCode = sqs_data['responseCode']
             ipAddress = sqs_data['ipAddress']
             completionTime=sqs_data['completionTime']
+            requestType = sqs_data['requestType']
             print (parameters.encode('utf-8'))
             ins = product.insert().values(TIMESTAMP=timestamp, URL=url, PARAMETERS=parameters, RESPONSECODE=responseCode,
-                                          IPADDRESS=ipAddress, EXECUTIONTIME=completionTime)
+                                          IPADDRESS=ipAddress, EXECUTIONTIME=completionTime, REQUESTTYPE=requestType)
             res = connection.execute(ins)
             message.delete()
 

@@ -13,14 +13,17 @@ public class LogPOJO {
     Integer responseCode;
     String ipAddress;
     Long completionTime;
+    String requestType;
 
-    public LogPOJO(Date timestamp, String url, String parameters, Integer responseCode, String ipAddress, Long completionTime) {
+    public LogPOJO(Date timestamp, String url, String parameters, Integer responseCode,
+                   String ipAddress, Long completionTime, String requestType) {
         this.timestamp = timestamp;
         this.url = url;
         this.parameters = parameters;
         this.responseCode = responseCode;
         this.ipAddress = ipAddress;
         this.completionTime = completionTime;
+        this.requestType = requestType;
     }
 
     public Long getCompletionTime() {
@@ -70,6 +73,14 @@ public class LogPOJO {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
     }
 
 }

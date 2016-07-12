@@ -51,10 +51,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
         }
 
         Long endTime = System.currentTimeMillis();
-
-
+        //TODO : enter start time
         LogPOJO logPOJO = new LogPOJO(new Date(), request.getRequestURI(), map.toString() ,
-                response.getStatus(), request.getRemoteAddr(), endTime - (Long)request.getAttribute("startTime"));
+                response.getStatus(), request.getRemoteAddr(), endTime - (Long)request.getAttribute("startTime"), request.getMethod());
 
         simpleQueueService.pushToQueue(logPOJO);
     }
