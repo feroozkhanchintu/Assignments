@@ -3,18 +3,34 @@ package com.cnu2016.ecommerce.models;
 /**
  * Created by vipulj on 07/07/16.
  */
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.cnu2016.ecommerce.pojo.ProductSerializer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="PRODUCT")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="PRODUCT_ID")
+    private Integer productID;
+    @Column(name="PRODUCT_DESCRIPTION")
+    private String productDescription;
+    @Column(name="COST_PRICE")
+    private Double costPrice;
+    @Column(name="SELLING_PRICE")
+    private Double sellingPrice;
+    @Column(name="QUANTITY_IN_STOCK")
+    private Integer quantityInStock;
+    @Column(name="PRODUCT_CODE")
+    private String productCode;
+    @Column(name="PRODUCT_NAME")
+    private String productName;
+    @Column(name="IS_AVAILABLE")
+    private Boolean isAvailable;
 
     public Integer getProductID() {
         return productID;
@@ -80,25 +96,6 @@ public class Product {
         this.isAvailable = isAvailable;
     }
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="PRODUCT_ID")
-    private Integer productID;
-    @Column(name="PRODUCT_DESCRIPTION")
-    private String productDescription;
-    @Column(name="COST_PRICE")
-    private Double costPrice;
-    @Column(name="SELLING_PRICE")
-    private Double sellingPrice;
-    @Column(name="QUANTITY_IN_STOCK")
-    private Integer quantityInStock;
-    @Column(name="PRODUCT_CODE")
-    private String productCode;
-    @Column(name="PRODUCT_NAME")
-    private String productName;
-    @Column(name="IS_AVAILABLE")
-    private Boolean isAvailable;
-
     protected Product() {}
 
     public Product(int productID, String productDescription, Double costPrice,
@@ -120,13 +117,6 @@ public class Product {
         this.productDescription = productSerializer.getDescription();
         this.productCode = productSerializer.getCode();
         this.isAvailable = Boolean.TRUE;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "Product[id=%d, productDescription='%s'']",
-                productID, productDescription);
     }
 
 }

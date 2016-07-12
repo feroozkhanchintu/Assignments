@@ -1,11 +1,13 @@
-package com.cnu2016.ecommerce.models;
+package com.cnu2016.ecommerce.pojo;
+
+import com.cnu2016.ecommerce.models.Product;
 
 /**
  * Created by vipulj on 08/07/16.
  */
 public class ProductSerializer {
     private int id;
-    
+
     public ProductSerializer(Product product) {
         this.id = product.getProductID();
         this.code = product.getProductCode();

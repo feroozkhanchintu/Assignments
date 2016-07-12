@@ -5,7 +5,7 @@ package com.cnu2016.ecommerce.controller;
  */
 
 import com.cnu2016.ecommerce.models.Product;
-import com.cnu2016.ecommerce.models.ProductSerializer;
+import com.cnu2016.ecommerce.pojo.ProductSerializer;
 import com.cnu2016.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class ProductController {
+public class ProductController{
 
     @Autowired
     ProductRepository productRepository;
