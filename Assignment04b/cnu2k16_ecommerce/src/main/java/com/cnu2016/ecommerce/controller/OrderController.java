@@ -27,7 +27,7 @@ public class OrderController {
 
     @RequestMapping(value="/api/orders/{id}", method=RequestMethod.GET)
     public ResponseEntity<?> getOrdersById(@PathVariable Integer id) {
-        return ResponseEntity.ok(ordersRepository.findOne(id));
+        return ResponseEntity.status(HttpStatus.OK).body(ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE));
     }
 
     @RequestMapping(value="/api/orders", method=RequestMethod.POST)
@@ -35,5 +35,17 @@ public class OrderController {
         Orders orders = ordersRepository.save(new Orders(new Date(), OrderEnum.INPROCESS.getStatus()));
         return ResponseEntity.status(HttpStatus.CREATED).body(orders.getOrderId());
     }
+
+    @RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteOrder(@PathVariable Integer id, @RequestBody ProductSerializer body) {
+        Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist!!");
+        }
+        orders.setDeleted(Boolean.TRUE);
+        orders = ordersRepository.save(orders);
+        return ResponseEntity.status(HttpStatus.OK).body(orders.getOrderId());
+    }
+
 
 }

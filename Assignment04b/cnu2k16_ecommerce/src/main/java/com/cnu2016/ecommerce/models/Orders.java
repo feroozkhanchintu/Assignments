@@ -25,6 +25,9 @@ public class Orders {
     @Column(name="STATUS")
     private String status;
 
+    @Column(name="DELETED")
+    private boolean deleted;
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User userDetails;
@@ -34,11 +37,12 @@ public class Orders {
     @JsonManagedReference
     private Set<OrderDetails> orderDetails;
 
-    public Orders(Integer orderId, Integer userId, Date orderDate, String status, User userDetails) {
+    public Orders(Integer orderId, Integer userId, Date orderDate, String status, User userDetails, boolean deleted) {
         this.orderId = orderId;
         this.userDetails = userDetails;
         this.orderDate = orderDate;
         this.status = status;
+        this.deleted = deleted;
     }
 
     public Orders(){}
@@ -50,6 +54,14 @@ public class Orders {
 
     public Set<OrderDetails> getOrderDetails() {
         return orderDetails;
+    }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void setOrderDetails(Set<OrderDetails> orderDetails) {

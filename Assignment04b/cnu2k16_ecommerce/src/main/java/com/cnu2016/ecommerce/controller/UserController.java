@@ -18,7 +18,6 @@ public class UserController {
 
     @RequestMapping(value="/api/users/{id}", method= RequestMethod.GET)
     public ResponseEntity<?> getUserById(@PathVariable Integer id) {
-        System.out.println(userRepository.findOne(id));
         return ResponseEntity.ok(userRepository.findOne(id));
     }
 }

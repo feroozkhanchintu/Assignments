@@ -139,6 +139,11 @@ public class User {
         this.country = country;
     }
 
+    public User(String companyName, String address) {
+        this.companyName = companyName;
+        this.address = address;
+    }
+
     public User(String companyName) {
         this.companyName = companyName;
     }

@@ -103,7 +103,7 @@ public class ProductController{
         } else {
             product.setIsAvailable(Boolean.FALSE);
             productRepository.save(product);
-            return ResponseEntity.ok().body("");
+            return ResponseEntity.status(HttpStatus.OK).body("");
         }
     }
 

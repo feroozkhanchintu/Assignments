@@ -30,8 +30,9 @@ public class OrderDetails {
     private Orders orders;
 
     @MapsId("productId")
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "PRODUCT_ID")
+    @JsonBackReference
     private Product products;
 
     protected OrderDetails() {}

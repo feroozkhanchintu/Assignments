@@ -1,25 +1,31 @@
 package com.cnu2016.ecommerce.controller;
 
-import com.cnu2016.ecommerce.models.OrderDetails;
-import com.cnu2016.ecommerce.models.OrderDetailsPK;
-import com.cnu2016.ecommerce.models.Orders;
-import com.cnu2016.ecommerce.models.Product;
+import com.cnu2016.ecommerce.models.*;
+import com.cnu2016.ecommerce.pojo.CheckoutPOJO;
 import com.cnu2016.ecommerce.pojo.OrderEnum;
 import com.cnu2016.ecommerce.pojo.OrderProductPOJO;
 import com.cnu2016.ecommerce.repository.OrderDetailsRepository;
 import com.cnu2016.ecommerce.repository.OrdersRepository;
 import com.cnu2016.ecommerce.repository.ProductRepository;
+import com.cnu2016.ecommerce.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 /**
  * Created by vipulj on 09/07/16.
  */
 @RestController
 public class OrderDetailsController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(com.cnu2016.ecommerce.controller.OrderDetailsController.class);
+
     @Autowired
     OrdersRepository ordersRepository;
 
@@ -29,25 +35,24 @@ public class OrderDetailsController {
     @Autowired
     ProductRepository productRepository;
 
-    @RequestMapping(value="/api/order_details/{id1}/{id2}", method= RequestMethod.GET)
-    public ResponseEntity<?> getOrdersById(@PathVariable Integer id1, @PathVariable Integer id2) {
-        OrderDetailsPK orderDetailsPK = new OrderDetailsPK(id1, id2);
-        return ResponseEntity.ok(orderDetailsRepository.findOne(orderDetailsPK));
-    }
+    @Autowired
+    UserRepository userRepository;
 
-    @RequestMapping(value="/api/order/{orderId}/orderLineItem/", method=RequestMethod.POST)
+    @RequestMapping(value = "/api/orders/{orderId}/orderLineItem", method = RequestMethod.POST)
     public ResponseEntity<?> addProductIntoOrder(@PathVariable Integer orderId, @RequestBody OrderProductPOJO body) {
-        Orders orders = ordersRepository.findOne(orderId);
+        Orders orders = ordersRepository.findByOrderIdAndDeleted(orderId, Boolean.FALSE);
         if (orders == null) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Such Order Created!!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Such Order Created!!");
+        }
+        if (body == null || body.getQty() == null || body.getProduct_id() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Entry into add product to item!!");
         }
         Product product = productRepository.findOne(body.getProduct_id());
         if (product == null) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Product Found!!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Product Found!!");
         }
-
         if (orders.getStatus() == OrderEnum.SHIPPED.getStatus()) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Shipped!!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Shipped!!");
         }
         OrderDetailsPK orderDetailsPK = new OrderDetailsPK(orders.getOrderId(), product.getProductID());
         OrderDetails orderDetails = orderDetailsRepository.findOne(orderDetailsPK);
@@ -56,12 +61,49 @@ public class OrderDetailsController {
             newOrderDetails = new OrderDetails(orderDetailsPK, body.getQty(),
                     product.getCostPrice(), product.getSellingPrice(), orders, product);
         } else {
-            System.out.println("imhere");
             newOrderDetails = new OrderDetails(orderDetailsPK, orderDetails.getQuantityOrdered() + body.getQty(),
                     product.getCostPrice(), product.getSellingPrice());
         }
         OrderDetails orderDetails1 = orderDetailsRepository.save(newOrderDetails);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orders);
+        product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
+        productRepository.save(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderDetails1);
     }
 
+    @RequestMapping(value = "/api/orders/{id}", method = RequestMethod.PATCH)
+    public ResponseEntity<?> checkout(@PathVariable Integer id, @RequestBody CheckoutPOJO body) {
+        Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
+        if (body.getAddress() == null || body.getStatus() == null || body.getUser_name() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
+        }
+        User user = userRepository.findDistinctUserByCompanyName(body.getUser_name());
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist!!");
+        }
+        Set<OrderDetails> orderDetailsSet = orders.getOrderDetails();
+        for (OrderDetails orderDetails : orderDetailsSet) {
+            Product product = orderDetails.getProducts();
+            if (orderDetails.getQuantityOrdered() > product.getQuantityInStock()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Items more than inside the inventory!!");
+            }
+        }
+        if (user == null) {
+            User user1 = userRepository.save(new User(body.getUser_name(), body.getAddress()));
+            orders.setStatus(OrderEnum.SHIPPED.getStatus());
+            orders.setUserDetails(user1);
+            Orders orders1 = ordersRepository.save(orders);
+        } else {
+            user.setAddress(body.getAddress());
+            userRepository.save(user);
+            orders.setStatus(OrderEnum.SHIPPED.getStatus());
+            orders.setUserDetails(user);
+            Orders orders1 = ordersRepository.save(orders);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
+    }
+
+    @RequestMapping(value = "/api/health", method = RequestMethod.GET)
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
 }
