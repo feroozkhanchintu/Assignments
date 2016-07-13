@@ -78,7 +78,7 @@ public class OrderDetailsController {
     public ResponseEntity<?> checkout(@PathVariable Integer id, @RequestBody CheckoutPOJO body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
         if (body == null || body.getAddress() == null || body.getStatus() == null || body.getUser_name() == null) {
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Incomplete data!!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
         }
         User user = userRepository.findDistinctUserByCompanyName(body.getUser_name());
         if (orders == null) {
