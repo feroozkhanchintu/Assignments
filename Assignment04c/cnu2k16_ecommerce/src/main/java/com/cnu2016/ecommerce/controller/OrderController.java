@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by vipulj on 09/07/16.
@@ -27,24 +29,34 @@ public class OrderController {
 
     @RequestMapping(value="/api/orders/{id}", method=RequestMethod.GET)
     public ResponseEntity<?> getOrdersById(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE));
+        Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order Id does not exist!!");
+        }
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
     @RequestMapping(value="/api/orders", method=RequestMethod.POST)
     public ResponseEntity<?> createOrder(@RequestBody ProductSerializer body) {
         Orders orders = ordersRepository.save(new Orders(new Date(), OrderEnum.INPROCESS.getStatus()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(orders.getOrderId());
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(map);
     }
 
     @RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteOrder(@PathVariable Integer id, @RequestBody ProductSerializer body) {
+    public ResponseEntity<?> deleteOrder(@PathVariable Integer id) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
         if (orders == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist!!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order Id does not exist!!");
         }
         orders.setDeleted(Boolean.TRUE);
         orders = ordersRepository.save(orders);
-        return ResponseEntity.status(HttpStatus.OK).body(orders.getOrderId());
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
 
