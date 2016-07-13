@@ -13,6 +13,12 @@
     </parent>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>1.3.6.RELEASE</version>
+        </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
