@@ -43,11 +43,11 @@ public class OrderDetailsController {
     @RequestMapping(value = "/api/orders/{orderId}/orderLineItem", method = RequestMethod.POST)
     public ResponseEntity<?> addProductIntoOrder(@PathVariable Integer orderId, @RequestBody OrderProductPOJO body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(orderId, Boolean.FALSE);
-        if (orders == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
-        }
         if (body == null || body.getQty() == null || body.getProduct_id() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Entry into add product to item!!");
+        }
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
         }
         Product product = productRepository.findOne(body.getProduct_id());
         if (product == null) {
@@ -67,8 +67,8 @@ public class OrderDetailsController {
                     product.getCostPrice(), product.getSellingPrice());
         }
         OrderDetails orderDetails1 = orderDetailsRepository.save(newOrderDetails);
-        product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
-        productRepository.save(product);
+//        product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
+//        productRepository.save(product);
         Map<String, Integer> map = new HashMap<>();
         map.put("id", orders.getOrderId());
         return ResponseEntity.status(HttpStatus.CREATED).body(map);
