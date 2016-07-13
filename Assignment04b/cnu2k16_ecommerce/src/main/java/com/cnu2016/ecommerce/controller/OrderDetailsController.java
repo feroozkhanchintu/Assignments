@@ -53,9 +53,9 @@ public class OrderDetailsController {
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Product Found!!");
         }
-        if (orders.getStatus().equals(OrderEnum.SHIPPED.getStatus())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Shipped!!");
-        }
+//        if (orders.getStatus().equals(OrderEnum.SHIPPED.getStatus())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Shipped!!");
+//        }
         OrderDetailsPK orderDetailsPK = new OrderDetailsPK(orders.getOrderId(), product.getProductID());
         OrderDetails orderDetails = orderDetailsRepository.findOne(orderDetailsPK);
         OrderDetails newOrderDetails;
@@ -84,9 +84,9 @@ public class OrderDetailsController {
         if (orders == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
         }
-        if (orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already shipped!!");
-        }
+//        if (orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already shipped!!");
+//        }
         Set<OrderDetails> orderDetailsSet = orders.getOrderDetails();
         for (OrderDetails orderDetails : orderDetailsSet) {
             Product product = orderDetails.getProducts();
