@@ -47,7 +47,7 @@ public class OrderController {
     }
 
     @RequestMapping(value="/api/orders/{id}", method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteOrder(@PathVariable Integer id, @RequestBody ProductSerializer body) {
+    public ResponseEntity<?> deleteOrder(@PathVariable Integer id) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
         if (orders == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order Id does not exist!!");
