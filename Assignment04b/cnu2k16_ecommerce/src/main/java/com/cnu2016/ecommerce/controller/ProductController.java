@@ -29,7 +29,7 @@ public class ProductController{
     {
         List<ProductSerializer> target = new ArrayList<>();
         for (Product product : productRepository.findByIsAvailable(true)) {
-            target.add(new ProductSerializer(product.getProductID(), product.getProductCode(), product.getProductDescription()));
+            target.add(new ProductSerializer(product));
         }
         return target;
     }
@@ -39,8 +39,7 @@ public class ProductController{
     public ResponseEntity<?> getProductsById(@PathVariable Integer id) {
         Product product = productRepository.findByProductIDAndIsAvailable(id, true);
         if (product != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(new ProductSerializer(product.getProductID(),
-                    product.getProductCode(), product.getProductDescription()));
+            return ResponseEntity.status(HttpStatus.OK).body(new ProductSerializer(product));
         } else {
             Map error = new HashMap();
             error.put("detail" , "Not found.");
@@ -82,6 +81,9 @@ public class ProductController{
             }
             if (body.getDescription() != null) {
                 product.setProductDescription(body.getDescription());
+            }
+            if (body.getQty() != null) {
+                product.setQuantityInStock(body.getQty());
             }
             productRepository.save(product);
             return ResponseEntity.status(HttpStatus.OK).body(new ProductSerializer(product));

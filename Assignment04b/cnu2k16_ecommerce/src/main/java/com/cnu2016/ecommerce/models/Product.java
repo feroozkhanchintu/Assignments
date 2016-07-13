@@ -116,6 +116,7 @@ public class Product {
         this.productID = productSerializer.getId();
         this.productDescription = productSerializer.getDescription();
         this.productCode = productSerializer.getCode();
+        this.quantityInStock = productSerializer.getQty();
         this.isAvailable = Boolean.TRUE;
     }
 
