@@ -43,9 +43,9 @@ public class OrderDetailsController {
     @RequestMapping(value = "/api/orders/{orderId}/orderLineItem", method = RequestMethod.POST)
     public ResponseEntity<?> addProductIntoOrder(@PathVariable Integer orderId, @RequestBody OrderProductPOJO body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(orderId, Boolean.FALSE);
-        if (body == null || body.getQty() == null || body.getProduct_id() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Entry into add product to item!!");
-        }
+//        if (body == null || body.getQty() == null || body.getProduct_id() == null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Entry into add product to item!!");
+//        }
         if (orders == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
         }
@@ -77,9 +77,9 @@ public class OrderDetailsController {
     @RequestMapping(value = "/api/orders/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<?> checkout(@PathVariable Integer id, @RequestBody CheckoutPOJO body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
-        if (body == null || body.getAddress() == null || body.getStatus() == null || body.getUser_name() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
-        }
+//        if (body == null || body.getAddress() == null || body.getStatus() == null || body.getUser_name() == null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
+//        }
         User user = userRepository.findDistinctUserByCompanyName(body.getUser_name());
         if (orders == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
@@ -87,18 +87,18 @@ public class OrderDetailsController {
 //        if (orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already shipped!!");
 //        }
-        Set<OrderDetails> orderDetailsSet = orders.getOrderDetails();
-        for (OrderDetails orderDetails : orderDetailsSet) {
-            Product product = orderDetails.getProducts();
-            if (orderDetails.getQuantityOrdered() > product.getQuantityInStock()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Items more than inside the inventory!!");
-            }
-        }
-        for (OrderDetails orderDetails : orderDetailsSet) {
-            Product product = orderDetails.getProducts();
-            product.setQuantityInStock(product.getQuantityInStock() - orderDetails.getQuantityOrdered());
-            productRepository.save(product);
-        }
+//        Set<OrderDetails> orderDetailsSet = orders.getOrderDetails();
+//        for (OrderDetails orderDetails : orderDetailsSet) {
+//            Product product = orderDetails.getProducts();
+//            if (orderDetails.getQuantityOrdered() > product.getQuantityInStock()) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Items more than inside the inventory!!");
+//            }
+//        }
+//        for (OrderDetails orderDetails : orderDetailsSet) {
+//            Product product = orderDetails.getProducts();
+//            product.setQuantityInStock(product.getQuantityInStock() - orderDetails.getQuantityOrdered());
+//            productRepository.save(product);
+//        }
         if (user == null) {
             User user1 = userRepository.save(new User(body.getUser_name(), body.getAddress()));
             orders.setStatus(OrderEnum.SHIPPED.getStatus());
