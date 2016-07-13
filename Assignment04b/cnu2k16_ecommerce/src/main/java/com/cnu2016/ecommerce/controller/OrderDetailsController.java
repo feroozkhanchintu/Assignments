@@ -77,8 +77,8 @@ public class OrderDetailsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
         }
         User user = userRepository.findDistinctUserByCompanyName(body.getUser_name());
-        if (orders == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist!!");
+        if (orders == null || orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist or already shipped!!");
         }
         Set<OrderDetails> orderDetailsSet = orders.getOrderDetails();
         for (OrderDetails orderDetails : orderDetailsSet) {
@@ -86,6 +86,11 @@ public class OrderDetailsController {
             if (orderDetails.getQuantityOrdered() > product.getQuantityInStock()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Items more than inside the inventory!!");
             }
+        }
+        for (OrderDetails orderDetails : orderDetailsSet) {
+            Product product = orderDetails.getProducts();
+            product.setQuantityInStock(product.getQuantityInStock() - orderDetails.getQuantityOrdered());
+            productRepository.save(product);
         }
         if (user == null) {
             User user1 = userRepository.save(new User(body.getUser_name(), body.getAddress()));

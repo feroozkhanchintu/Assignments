@@ -7,6 +7,8 @@ import com.cnu2016.ecommerce.models.Product;
  */
 public class ProductSerializer {
     private int id;
+    private String code;
+    private String description;
 
     public ProductSerializer(Product product) {
         this.id = product.getProductID();
@@ -43,9 +45,6 @@ public class ProductSerializer {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    private String code;
-    private String description;
 
     public ProductSerializer(){}
 }
