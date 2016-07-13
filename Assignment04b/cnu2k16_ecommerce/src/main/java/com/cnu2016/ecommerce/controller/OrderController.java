@@ -29,7 +29,10 @@ public class OrderController {
 
     @RequestMapping(value="/api/orders/{id}", method=RequestMethod.GET)
     public ResponseEntity<?> getOrdersById(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE));
+        Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
     @RequestMapping(value="/api/orders", method=RequestMethod.POST)
