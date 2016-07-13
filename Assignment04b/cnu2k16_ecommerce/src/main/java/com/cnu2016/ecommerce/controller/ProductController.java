@@ -55,9 +55,9 @@ public class ProductController{
 
     @RequestMapping(value="/api/products/{pk}", method=RequestMethod.PUT)
     public ResponseEntity<?> insertProductsPut(@RequestBody ProductSerializer body, @PathVariable Integer pk) {
-//        if (body.getCode() == null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
-//        }
+        if (body.getCode() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
         Product product = productRepository.findByProductIDAndIsAvailable(pk, true);
         body.setId(pk);
         if (product != null) {

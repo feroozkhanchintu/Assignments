@@ -19,9 +19,9 @@ public class FeedbackController {
 
     @RequestMapping(value="/api/contactus", method= RequestMethod.POST)
     public ResponseEntity<?> getOrdersById(@RequestBody String message) {
-//        if (message.equals(null)) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty message given!!");
-//        }
+        if (message.equals(null)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty message given!!");
+        }
         feedbackRepository.save(new Feedback(message));
         return ResponseEntity.status(HttpStatus.OK).body("Message Added");
     }
