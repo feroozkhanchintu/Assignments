@@ -69,7 +69,9 @@ public class OrderDetailsController {
         OrderDetails orderDetails1 = orderDetailsRepository.save(newOrderDetails);
         product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
         productRepository.save(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderDetails1);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(map);
     }
 
     @RequestMapping(value = "/api/orders/{id}", method = RequestMethod.PATCH)
