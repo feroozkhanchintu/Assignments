@@ -30,6 +30,9 @@ public class OrderController {
     @RequestMapping(value="/api/orders/{id}", method=RequestMethod.GET)
     public ResponseEntity<?> getOrdersById(@PathVariable Integer id) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order Id does not exist!!");
+        }
         Map<String, Integer> map = new HashMap<>();
         map.put("id", orders.getOrderId());
         return ResponseEntity.status(HttpStatus.OK).body(map);
@@ -47,7 +50,7 @@ public class OrderController {
     public ResponseEntity<?> deleteOrder(@PathVariable Integer id, @RequestBody ProductSerializer body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
         if (orders == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist!!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order Id does not exist!!");
         }
         orders.setDeleted(Boolean.TRUE);
         orders = ordersRepository.save(orders);

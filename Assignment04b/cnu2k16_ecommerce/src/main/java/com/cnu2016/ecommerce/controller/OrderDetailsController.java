@@ -44,7 +44,7 @@ public class OrderDetailsController {
     public ResponseEntity<?> addProductIntoOrder(@PathVariable Integer orderId, @RequestBody OrderProductPOJO body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(orderId, Boolean.FALSE);
         if (orders == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Such Order Created!!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
         }
         if (body == null || body.getQty() == null || body.getProduct_id() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Entry into add product to item!!");
@@ -53,7 +53,7 @@ public class OrderDetailsController {
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Product Found!!");
         }
-        if (orders.getStatus() == OrderEnum.SHIPPED.getStatus()) {
+        if (orders.getStatus().equals(OrderEnum.SHIPPED.getStatus())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Shipped!!");
         }
         OrderDetailsPK orderDetailsPK = new OrderDetailsPK(orders.getOrderId(), product.getProductID());
@@ -81,8 +81,11 @@ public class OrderDetailsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
         }
         User user = userRepository.findDistinctUserByCompanyName(body.getUser_name());
-        if (orders == null || orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist or already shipped!!");
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
+        }
+        if (orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already shipped!!");
         }
         Set<OrderDetails> orderDetailsSet = orders.getOrderDetails();
         for (OrderDetails orderDetails : orderDetailsSet) {
