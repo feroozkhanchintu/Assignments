@@ -43,17 +43,17 @@ public class OrderDetailsController {
     @RequestMapping(value = "/api/orders/{orderId}/orderLineItem", method = RequestMethod.POST)
     public ResponseEntity<?> addProductIntoOrder(@PathVariable Integer orderId, @RequestBody OrderProductPOJO body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(orderId, Boolean.FALSE);
-        if (orders == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Such Order Created!!");
-        }
         if (body == null || body.getQty() == null || body.getProduct_id() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Entry into add product to item!!");
+        }
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
         }
         Product product = productRepository.findOne(body.getProduct_id());
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Product Found!!");
         }
-        if (orders.getStatus() == OrderEnum.SHIPPED.getStatus()) {
+        if (orders.getStatus().equals(OrderEnum.SHIPPED.getStatus())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Shipped!!");
         }
         OrderDetailsPK orderDetailsPK = new OrderDetailsPK(orders.getOrderId(), product.getProductID());
@@ -66,10 +66,12 @@ public class OrderDetailsController {
             newOrderDetails = new OrderDetails(orderDetailsPK, orderDetails.getQuantityOrdered() + body.getQty(),
                     product.getCostPrice(), product.getSellingPrice());
         }
-        OrderDetails orderDetails1 = orderDetailsRepository.save(newOrderDetails);
-        product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
-        productRepository.save(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderDetails1);
+        orderDetailsRepository.save(newOrderDetails);
+//        product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
+//        productRepository.save(product);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(map);
     }
 
     @RequestMapping(value = "/api/orders/{id}", method = RequestMethod.PATCH)
@@ -79,8 +81,11 @@ public class OrderDetailsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
         }
         User user = userRepository.findDistinctUserByCompanyName(body.getUser_name());
-        if (orders == null || orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Id does not exist or already shipped!!");
+        if (orders == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Such Order Created!!");
+        }
+        if (orders.getStatus().equals(OrderEnum.SHIPPED.toString())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already shipped!!");
         }
         Set<OrderDetails> orderDetailsSet = orders.getOrderDetails();
         for (OrderDetails orderDetails : orderDetailsSet) {
@@ -108,7 +113,7 @@ public class OrderDetailsController {
         }
         Map<String, Integer> map = new HashMap<>();
         map.put("id", orders.getOrderId());
-        return ResponseEntity.status(HttpStatus.OK).body(orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
     @RequestMapping(value = "/api/health", method = RequestMethod.GET)
