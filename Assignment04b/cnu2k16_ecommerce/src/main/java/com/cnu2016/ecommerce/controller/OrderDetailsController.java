@@ -66,9 +66,9 @@ public class OrderDetailsController {
             newOrderDetails = new OrderDetails(orderDetailsPK, orderDetails.getQuantityOrdered() + body.getQty(),
                     product.getCostPrice(), product.getSellingPrice());
         }
-        OrderDetails orderDetails1 = orderDetailsRepository.save(newOrderDetails);
-        product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
-        productRepository.save(product);
+        orderDetailsRepository.save(newOrderDetails);
+//        product.setQuantityInStock(product.getQuantityInStock() - body.getQty());
+//        productRepository.save(product);
         Map<String, Integer> map = new HashMap<>();
         map.put("id", orders.getOrderId());
         return ResponseEntity.status(HttpStatus.CREATED).body(map);
