@@ -108,7 +108,7 @@ public class OrderDetailsController {
         }
         Map<String, Integer> map = new HashMap<>();
         map.put("id", orders.getOrderId());
-        return ResponseEntity.status(HttpStatus.OK).body(orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
     @RequestMapping(value = "/api/health", method = RequestMethod.GET)
