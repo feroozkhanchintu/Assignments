@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -73,7 +75,7 @@ public class OrderDetailsController {
     @RequestMapping(value = "/api/orders/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<?> checkout(@PathVariable Integer id, @RequestBody CheckoutPOJO body) {
         Orders orders = ordersRepository.findByOrderIdAndDeleted(id, Boolean.FALSE);
-        if (body.getAddress() == null || body.getStatus() == null || body.getUser_name() == null) {
+        if (body == null || body.getAddress() == null || body.getStatus() == null || body.getUser_name() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incomplete data!!");
         }
         User user = userRepository.findDistinctUserByCompanyName(body.getUser_name());
@@ -104,7 +106,9 @@ public class OrderDetailsController {
             orders.setUserDetails(user);
             Orders orders1 = ordersRepository.save(orders);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(orders);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", orders.getOrderId());
+        return ResponseEntity.status(HttpStatus.OK).body(orders.getOrderId());
     }
 
     @RequestMapping(value = "/api/health", method = RequestMethod.GET)
