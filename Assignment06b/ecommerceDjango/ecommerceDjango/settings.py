@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'ecommerceDjango.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cnu2016_vjain',
-        'USER':  'vjain',
-        'PASSWORD' :'vjain',
-        'HOST' : 'aline-cnu-insights-dev-cluster.cluster-czuocyoc6awe.us-east-1.rds.amazonaws.com',
-        # 'HOST': 'localhost',
+        'NAME': 'EcommerceDB',
+        'USER':  'root',
+        'PASSWORD' :'iit2012136',
+        # 'HOST' : 'aline-cnu-insights-dev-cluster.cluster-czuocyoc6awe.us-east-1.rds.amazonaws.com',
+        'HOST': 'localhost',
         'PORT' : '3306'
     }
 }

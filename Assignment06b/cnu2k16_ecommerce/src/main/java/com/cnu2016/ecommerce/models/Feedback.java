@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Feedback {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name="FEEDBACK_ID")
     private Integer id;
 
     private String message;

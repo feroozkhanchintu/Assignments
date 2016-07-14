@@ -19,8 +19,12 @@ class CategoryDescription(models.Model):
         managed = False
         db_table = 'CATEGORY_DESCRIPTION'
 
+    def __unicode__(self):
+        return self.category_name
+
 
 class Feedback(models.Model):
+    feedback_id = models.AutoField(db_column='FEEDBACK_ID', primary_key=True)  # Field name made lowercase.
     message = models.CharField(db_column='MESSAGE', max_length=1000, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -29,6 +33,7 @@ class Feedback(models.Model):
 
 
 class LogData(models.Model):
+    log_id = models.AutoField(db_column='LOG_ID', primary_key=True)  # Field name made lowercase.
     timestamp = models.DateTimeField(db_column='TIMESTAMP', blank=True, null=True)  # Field name made lowercase.
     url = models.CharField(db_column='URL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
     parameters = models.CharField(db_column='PARAMETERS', max_length=1000, blank=True, null=True)  # Field name made lowercase.
@@ -47,7 +52,7 @@ class Orders(models.Model):
     user = models.ForeignKey('UserDetails', models.DO_NOTHING, db_column='USER_ID', blank=True, null=True)  # Field name made lowercase.
     order_date = models.DateField(db_column='ORDER_DATE', blank=True, null=True)  # Field name made lowercase.
     status = models.CharField(db_column='STATUS', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    deleted = models.TextField(db_column='DELETED', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    deleted = models.IntegerField(db_column='DELETED', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -60,11 +65,11 @@ class OrderDetails(models.Model):
     quantity_ordered = models.IntegerField(db_column='QUANTITY_ORDERED', blank=True, null=True)  # Field name made lowercase.
     cost_price = models.FloatField(db_column='COST_PRICE', blank=True, null=True)  # Field name made lowercase.
     selling_price = models.FloatField(db_column='SELLING_PRICE', blank=True, null=True)  # Field name made lowercase.
+    order_details_id = models.AutoField(db_column='ORDER_DETAILS_ID', primary_key=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'ORDER_DETAILS'
-        unique_together = (('order', 'product'),)
 
 
 class Product(models.Model):
@@ -75,13 +80,16 @@ class Product(models.Model):
     quantity_in_stock = models.IntegerField(db_column='QUANTITY_IN_STOCK', blank=True, null=True)  # Field name made lowercase.
     product_code = models.CharField(db_column='PRODUCT_CODE', max_length=100, blank=True, null=True)  # Field name made lowercase.
     product_name = models.CharField(db_column='PRODUCT_NAME', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    is_available = models.TextField(db_column='IS_AVAILABLE', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    category_name = models.ForeignKey(CategoryDescription, models.DO_NOTHING, db_column='CATEGORY_NAME', blank=True, null=True)  # Field name made lowercase.
+    is_available = models.IntegerField(db_column='IS_AVAILABLE', blank=True, null=True)  # Field name made lowercase.
+    category = models.ForeignKey(CategoryDescription, models.DO_NOTHING, db_column='CATEGORY_ID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'PRODUCT'
         unique_together = (('product_code', 'product_name'),)
+
+    def __unicode__(self):
+        return self.product_name if (self.product_name != None) else "ID: " + str(self.product_id)
 
 
 class UserDetails(models.Model):
@@ -99,3 +107,113 @@ class UserDetails(models.Model):
     class Meta:
         managed = False
         db_table = 'USER_DETAILS'
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=80)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=30)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.SmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
