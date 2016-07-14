@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'ecommerceDjango.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'EcommerceDB',
-        'USER':  'root',
-        'PASSWORD' :'iit2012136',
+        'NAME': 'xyz',
+        'USER':  'xyz',
+        'PASSWORD' :'xyz',
         # 'HOST' : 'aline-cnu-insights-dev-cluster.cluster-czuocyoc6awe.us-east-1.rds.amazonaws.com',
         'HOST': 'localhost',
         'PORT' : '3306'
